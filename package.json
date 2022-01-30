@@ -1,0 +1,36 @@
+{
+  "name": "mysql2-cache",
+  "version": "1.0.0",
+  "description": "✔ MySQL2 upgrade: cache queries, easy shortcuts, logging and debugging.",
+  "main": "index.js",
+  "scripts": {
+    "test": "DEBUG=* node ./test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/2naive/node-mysql2-cache.git"
+  },
+  "keywords": [
+    "mysql",
+    "mysql2",
+    "node",
+    "cache",
+    "helper",
+    "debug",
+    "utilities",
+    "promises",
+    "async"
+  ],
+  "author": "2naive",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/2naive/node-mysql2-cache/issues"
+  },
+  "homepage": "https://github.com/2naive/node-mysql2-cache#readme",
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "debug": "^4.3.3",
+    "mysql2": "^2.3.3",
+    "node-cache": "^5.1.2"
+  }
+}
