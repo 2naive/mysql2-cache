@@ -6,7 +6,7 @@
 ![node-current](https://img.shields.io/node/v/mysql2-cache)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/2naive/node-mysql2-cache/Node.js%20Package)
 ![Coveralls github](https://img.shields.io/coveralls/github/2naive/node-mysql2-cache)
-![Standard - JavaScript Style Guide]https://img.shields.io/badge/code_style-standard-brightgreen.svg
+![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)
 
 > ✔ MySQL2 upgrade: cache queries, easy shortcuts, logging and debugging.
 
