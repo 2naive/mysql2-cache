@@ -59,7 +59,8 @@ server.on('connection', conn => {
 const db = mysql.connect()
 db.q('SELECT * FROM test_table').then(res => console.dir)
 db.q('SELECT * FROM test_table', {}, true).then((res) => {
-  db.q('SELECT * FROM test_table', {}, true)
+  db.q('SELECT * FROM test_table', {}, true).then((res) => {
+    process.exit(0)
+  })
   console.dir(res)
-  process.exit()
 })
