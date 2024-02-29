@@ -61,4 +61,5 @@ db.q('SELECT * FROM test_table').then(res => console.dir)
 db.q('SELECT * FROM test_table', {}, true).then((res) => {
   db.q('SELECT * FROM test_table', {}, true)
   console.dir(res)
+  process.exit()
 })
