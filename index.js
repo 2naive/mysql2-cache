@@ -24,7 +24,7 @@ module.exports.connect = (config = {}) => {
   const pool = mysql.createPool(config).promise()
   let qid = 0
 
-  pool.q = async (sql, params, cache = false, ttl = undefined) => {
+  pool.q = async (sql, params = [], cache = false, ttl = undefined) => {
     qid++
     const id = qid
     const hash = crypto.createHash('sha1').update(sql + JSON.stringify(params)).digest('base64')
@@ -54,6 +54,11 @@ module.exports.connect = (config = {}) => {
       queryCache.set(hash, result, ttl)
     }
     return result
+  }
+
+  pool.qRow = async (sql, params = [], cache = false, ttl = undefined) => {
+    const rows = await pool.q(sql, params, cache, ttl)
+    return Array.isArray(rows) && rows.length ? rows[0] : false
   }
 
   return pool
