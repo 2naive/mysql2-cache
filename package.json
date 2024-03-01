@@ -4,7 +4,7 @@
   "description": "✔ MySQL2 upgrade: cache queries, easy shortcuts, logging and debugging.",
   "main": "index.js",
   "scripts": {
-    "test": "DEBUG=* node ./test/test.js"
+    "test": "node ./test/test.js"
   },
   "repository": {
     "type": "git",

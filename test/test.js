@@ -1,3 +1,4 @@
+// @todo Node default test runner
 const mysql = require('../index.js')
 // https://github.com/sidorares/node-mysql2/blob/master/examples/server.js
 const server = mysql.createServer()
@@ -60,7 +61,12 @@ const db = mysql.connect()
 db.q('SELECT * FROM test_table').then(res => console.dir)
 db.q('SELECT * FROM test_table', {}, true).then((res) => {
   db.q('SELECT * FROM test_table', {}, true).then((res) => {
+    server.close()
     process.exit(0)
   })
-  console.dir(res)
+  console.log('✅ ', res)
+})
+
+process.on('exit', code => {
+  console.log(`About to exit with code: ${code}`)
 })
