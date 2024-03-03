@@ -72,7 +72,7 @@ module.exports.connect = (config = {}) => {
     return result
   }
 
-  pool.qRow = async (sql, params = [], cache = false, ttl = undefined) => {
+  pool.qRow = pool.selectRow = async (sql, params = [], cache = false, ttl = undefined) => {
     const rows = await pool.q(sql, params, cache, ttl)
     return Array.isArray(rows) && rows.length ? rows[0] : false
   }
@@ -86,32 +86,48 @@ module.exports.connect = (config = {}) => {
     }
   }
 
-  pool.insert = async (table, row) => {
+  pool.insert = pool.i = async (table, row) => {
     qid++
     const log = debug.extend(qid)
     log('INSERT INTO', table/*, row, rows/*, fields */)
+    log(getTable(row))
     const [rows, fields] = await pool.query('INSERT INTO ?? SET ?', [table, row])
       .catch(error => {
         console.error('[MYSQL] insert', table, row, error)
         throw error
       })
-    log(getTable(row))
     log(getTable(rows))
     return rows || false
   }
 
-  pool.update = async (table, row, where) => {
+  pool.update = async (table, row, where = false) => {
     qid++
     const log = debug.extend(qid)
     log('UPDATE', table/*, [row, where], rows/*, fields */)
-    const _where = Object.keys(where).map(key => key + '=' + pool.escape(where[key])).join(' AND ')
-    const [rows, fields] = await pool.query(`UPDATE ?? SET ? WHERE ${_where}`, [table, row])
+    log(getTable(row))
+    log(getTable(where))
+    const _where = where ? 'WHERE ' + Object.keys(where).map(key => key + '=' + pool.escape(where[key])).join(' AND ') : ''
+    const [rows, fields] = await pool.query(`UPDATE ?? SET ? ${_where}`, [table, row])
       .catch(error => {
         console.error('[MYSQL] update', table, [row, where], error)
         throw error
       })
-    log(getTable(row))
+
+    log(getTable(rows))
+    return rows || false
+  }
+
+  pool.delete = pool.del = async (table, where = false) => {
+    qid++
+    const log = debug.extend(qid)
+    log('DELETE', table/*, [row, where], rows/*, fields */)
     log(getTable(where))
+    const _where = where ? 'WHERE ' + Object.keys(where).map(key => key + '=' + pool.escape(where[key])).join(' AND ') : ''
+    const [rows, fields] = await pool.query(`DELETE FROM ?? ${_where}`, [table])
+      .catch(error => {
+        console.error('[MYSQL] delete', table, where, error)
+        throw error
+      })
     log(getTable(rows))
     return rows || false
   }
@@ -188,9 +204,11 @@ module.exports.connect = (config = {}) => {
   return pool
 }
 
-process.on('unhandledRejection', (reason, p) => {
-  console.error('Unhandled Rejection at:', p, 'reason:', reason)
+/*
+process.on('unhandledRejection', (reason) => { // , promise
+  console.error('Unhandled rejection:', reason)
 })
 process.on('uncaughtException', (error) => {
-  console.error(`Caught exception: ${error}\n` + `Exception origin: ${error.stack}`)
+  console.error('Uncaught exception:', error)
 })
+*/
