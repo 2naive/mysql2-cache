@@ -89,46 +89,42 @@ module.exports.connect = (config = {}) => {
   pool.insert = pool.i = async (table, row) => {
     qid++
     const log = debug.extend(qid)
-    log('INSERT INTO', table/*, row, rows/*, fields */)
-    log(getTable(row))
+    log('INSERT INTO', table)
+    log(row)
     const [rows, fields] = await pool.query('INSERT INTO ?? SET ?', [table, row])
       .catch(error => {
         console.error('[MYSQL] insert', table, row, error)
         throw error
       })
-    log(getTable(rows))
+    log(rows)
     return rows || false
   }
 
   pool.update = async (table, row, where = false) => {
     qid++
     const log = debug.extend(qid)
-    log('UPDATE', table/*, [row, where], rows/*, fields */)
-    log(getTable(row))
-    log(getTable(where))
+    log('UPDATE', table, row, where)
     const _where = where ? 'WHERE ' + Object.keys(where).map(key => key + '=' + pool.escape(where[key])).join(' AND ') : ''
     const [rows, fields] = await pool.query(`UPDATE ?? SET ? ${_where}`, [table, row])
       .catch(error => {
         console.error('[MYSQL] update', table, [row, where], error)
         throw error
       })
-
-    log(getTable(rows))
+    log(rows)
     return rows || false
   }
 
   pool.delete = pool.del = async (table, where = false) => {
     qid++
     const log = debug.extend(qid)
-    log('DELETE', table/*, [row, where], rows/*, fields */)
-    log(getTable(where))
+    log('DELETE FROM', table, where)
     const _where = where ? 'WHERE ' + Object.keys(where).map(key => key + '=' + pool.escape(where[key])).join(' AND ') : ''
     const [rows, fields] = await pool.query(`DELETE FROM ?? ${_where}`, [table])
       .catch(error => {
         console.error('[MYSQL] delete', table, where, error)
         throw error
       })
-    log(getTable(rows))
+    log(rows)
     return rows || false
   }
 
