@@ -46,7 +46,7 @@ module.exports.connect = (config = {}) => {
   pool.q = async (sql, params = [], cache = false, ttl = undefined) => {
     qid++
     const log = debug.extend(qid)
-    log(sql, params)
+    log(sql, params, {cache: cache, ttl: ttl ? ttl : DEFAULT_CACHE_TTL})
     // https://medium.com/@chris_72272/what-is-the-fastest-node-js-hashing-algorithm-c15c1a0e164e
     const hash = crypto.createHash('sha1').update(sql + JSON.stringify(params)).digest('base64')
     if (cache && queryCache.has(hash)) {
@@ -77,15 +77,7 @@ module.exports.connect = (config = {}) => {
     return Array.isArray(rows) && rows.length ? rows[0] : false
   }
 
-  pool.stat = () => {
-    return {
-      ALL: pool.pool._allConnections.toArray().length,
-      // USE: pool.pool._allConnections.toArray().length - pool.pool._freeConnections.toArray().length,
-      FRE: pool.pool._freeConnections.toArray().length,
-      QUE: pool.pool._connectionQueue.toArray().length
-    }
-  }
-
+  // @todo insert array of objects
   pool.insert = pool.i = async (table, row) => {
     qid++
     const log = debug.extend(qid)
@@ -126,6 +118,32 @@ module.exports.connect = (config = {}) => {
       })
     log(rows)
     return rows || false
+  }
+
+  pool.stat = () => {
+    return {
+      ALL: pool.pool._allConnections.toArray().length,
+      // USE: pool.pool._allConnections.toArray().length - pool.pool._freeConnections.toArray().length,
+      FRE: pool.pool._freeConnections.toArray().length,
+      QUE: pool.pool._connectionQueue.toArray().length
+    }
+  }
+
+  pool.cacheFlush = (sql, params) => {
+    const hash = crypto.createHash('sha1').update(sql + JSON.stringify(params)).digest('base64')
+    const deleted = queryCache.del(hash)
+    debug('Cache flush', sql, params, { deleted }, queryCache.getStats())
+    return deleted
+  }
+
+  pool.cacheFlushAll = () => {
+    queryCache.flushAll()
+    debug('Cache flush all', queryCache.getStats())
+    return true
+  }
+
+  exports.cacheStat = () => {
+    return queryCache.getStats()
   }
 
   pool.on('acquire', (connection) => {

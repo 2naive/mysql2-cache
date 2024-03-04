@@ -2,10 +2,10 @@
 
 [![NPM](https://nodei.co/npm/mysql2-cache.png?downloads=true&stars=true)](https://nodei.co/npm/mysql2-cache/)
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/2naive/node-mysql2-cache)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/2naive/mysql2-cache)
 ![node-current](https://img.shields.io/node/v/mysql2-cache)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/2naive/node-mysql2-cache/Node.js%20Package)
-![Coveralls github](https://img.shields.io/coveralls/github/2naive/node-mysql2-cache)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/2naive/mysql2-cache/npm-publish.yml?branch=main)
+![Coveralls github](https://img.shields.io/coveralls/github/2naive/mysql2-cache)
 ![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)
 
 > ✔ MySQL2 upgrade: cache queries, easy shortcuts, logging and debugging.
@@ -39,17 +39,16 @@ const db = mysql.connect({
   database: 'test',
   password: 'root'
 })
-db.q('SELECT * FROM test_table WHERE id=?', 1, true) // use cache with default ttl
+db.q('SELECT * FROM test_table WHERE id=?', 1, true) // use cache with default ttl=300s
 db.q('SELECT * FROM test_table WHERE id=?', 1, true, 300) // ttl in seconds
 ```
 
-
-### Debugging easy
+## Debugging easy
 
 Pass `DEBUG=mysql2-cache*` environment variable to pretty debug.
 
 ```bash
-  mysql2-cache:1 SELECT * FROM test_table undefined +0ms
+  mysql2-cache:1 SELECT * FROM test_table WHERE age > ? [1] +0ms
   mysql2-cache:1 ┌─────────┬─────────┬─────┐
   mysql2-cache:1 │ (index) │  name   │ age │
   mysql2-cache:1 ├─────────┼─────────┼─────┤
@@ -58,6 +57,26 @@ Pass `DEBUG=mysql2-cache*` environment variable to pretty debug.
   mysql2-cache:1 └─────────┴─────────┴─────┘
   mysql2-cache:1  +32ms
 ```
+
+## API
+
+You may use all [MySQL2](https://github.com/sidorares/node-mysql2) methods plus:
+
+### async q(sql, params = [], cache = false, ttl = undefined)
+
+### async insert(table, row)
+
+### async update(table, row, where = false)
+
+### async delete(table, row, where = false)
+
+### stat()
+
+### cacheFlush(sql, params)
+
+### cacheFlushAll()
+
+### cacheStat()
 
 ## Getting help
 
