@@ -12,7 +12,10 @@ const debug = require('debug')('mysql2-cache')
 const mysql = require('mysql2')
 const crypto = require('node:crypto')
 const NodeCache = require('node-cache')
-const queryCache = new NodeCache({ stdTTL: DEFAULT_CACHE_TTL, checkperiod: DEFAULT_CACHE_CHECKPERIOD })
+// useClones = false
+// https://github.com/node-cache/node-cache/issues/295
+// https://runkit.com/mpneuried/useclones-example-83
+const queryCache = new NodeCache({ stdTTL: DEFAULT_CACHE_TTL, checkperiod: DEFAULT_CACHE_CHECKPERIOD, useClones: false })
 
 const { Console } = require('console')
 const { Transform } = require('stream')
@@ -46,7 +49,7 @@ module.exports.connect = (config = {}) => {
   pool.q = async (sql, params = [], cache = false, ttl = undefined) => {
     qid++
     const log = debug.extend(qid)
-    log(sql, params, {cache: cache, ttl: ttl ? ttl : DEFAULT_CACHE_TTL})
+    log(sql, params, { cache: cache, ttl: ttl ? ttl : DEFAULT_CACHE_TTL })
     // https://medium.com/@chris_72272/what-is-the-fastest-node-js-hashing-algorithm-c15c1a0e164e
     const hash = crypto.createHash('sha1').update(sql + JSON.stringify(params)).digest('base64')
     if (cache && queryCache.has(hash)) {
