@@ -62,7 +62,11 @@ Pass `DEBUG=mysql2-cache*` environment variable to pretty debug.
 
 You may use all [MySQL2](https://github.com/sidorares/node-mysql2) methods plus:
 
+### connect([PoolOptions](https://sidorares.github.io/node-mysql2/docs#using-connection-pools))
+
 ### async q(sql, params = [], cache = false, ttl = undefined)
+
+### async qRow(sql, params = [], cache = false, ttl = undefined)
 
 ### async insert(table, row)
 
